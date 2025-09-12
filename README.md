@@ -1,36 +1,119 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## EVITA Inventory Manager – Next.js App
 
-## Getting Started
+Server-rendered inventory manager for labs, storage locations, devices, and movements. Uses Prisma with MS SQL Server.
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+
+- PNPM or NPM
+- Docker (for MS SQL Server) or a reachable MS SQL Server instance
+
+### 1) Clone the repo
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <your-repo-url>
+cd inventorymanager
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2) Install dependencies
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+With PNPM (recommended):
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+pnpm install
+```
 
-## Learn More
+Or with NPM:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm install
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+This installs Prisma and `@prisma/adapter-mssql`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 3) Start MS SQL Server (Docker)
 
-## Deploy on Vercel
+```bash
+docker run -e "ACCEPT_EULA=Y" \
+  -e "MSSQL_SA_PASSWORD=YourStrongPassw0rd" \
+  -p 1433:1433 \
+  --name evita-mssql \
+  -d mcr.microsoft.com/mssql/server:2022-latest
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Create DB (example: `EvitaInventoryDB`):
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+docker exec -it evita-mssql /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P YourStrongPassw0rd -Q "CREATE DATABASE EvitaInventoryDB;"
+```
+
+### 4) Environment for Prisma CLI
+
+Create `.env` with a SQL Server URL for Prisma CLI operations:
+
+```env
+DATABASE_URL="sqlserver://sa:YourStrongPassw0rd@localhost:1433;database=EvitaInventoryDB;trustServerCertificate=true;encrypt=false"
+```
+
+### 5) Generate Prisma client and sync schema
+
+```bash
+pnpm prisma generate
+pnpm prisma db push
+```
+
+or with NPM:
+
+```bash
+npx prisma generate
+npx prisma db push
+```
+
+Note: The Prisma client output is configured to `src/generated/prisma`. Import it in code as:
+
+```ts
+import { PrismaClient } from "@/generated/prisma";
+```
+
+At runtime, Prisma uses the MS SQL adapter configured in `src/lib/prisma.ts` similar to:
+
+```ts
+import { PrismaMssql } from "@prisma/adapter-mssql";
+import { PrismaClient } from "@/generated/prisma";
+
+const adapter = new PrismaMssql({
+  server: "localhost",
+  port: 1433,
+  database: "EvitaInventoryDB",
+  user: "sa",
+  password: "YourStrongPassw0rd",
+  options: { encrypt: false, trustServerCertificate: true },
+});
+
+export const prisma = new PrismaClient();
+```
+
+### 6) Run the app
+
+```bash
+pnpm dev
+# or
+npm run dev
+```
+
+Visit http://localhost:3000
+
+### Troubleshooting
+
+- "@prisma/client did not initialize yet" → Import from `@/generated/prisma` and run `prisma generate`.
+- Connection issues → Ensure Docker container is running and credentials in `.env` and `src/lib/prisma.ts` match.
+- Prisma CLI requires `DATABASE_URL` even when using the adapter at runtime.
+
+### Common commands
+
+```bash
+pnpm install
+pnpm prisma generate
+pnpm prisma db push
+pnpm dev
+```
