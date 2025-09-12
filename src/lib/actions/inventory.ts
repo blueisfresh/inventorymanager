@@ -44,7 +44,7 @@ export async function createInventoryItem(formData: FormData) {
   });
 
   revalidatePath("/inventory");
-  redirect("/inventory");
+  redirect("/inventory?toast=Item%20created&type=success");
 }
 
 export async function updateInventoryItem(id: number, formData: FormData) {
@@ -66,7 +66,7 @@ export async function updateInventoryItem(id: number, formData: FormData) {
   });
 
   revalidatePath("/inventory");
-  redirect("/inventory");
+  redirect("/inventory?toast=Item%20updated&type=success");
 }
 
 export async function deleteInventoryItem(id: number) {
@@ -75,7 +75,7 @@ export async function deleteInventoryItem(id: number) {
   });
 
   revalidatePath("/inventory");
-  redirect("/inventory");
+  redirect("/inventory?toast=Item%20deleted&type=success");
 }
 
 // Movement helpers

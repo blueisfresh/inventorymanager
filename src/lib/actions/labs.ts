@@ -49,7 +49,7 @@ export async function createLab(formData: FormData) {
   });
 
   revalidatePath("/labs");
-  redirect("/labs");
+  redirect("/labs?toast=Lab%20created&type=success");
 }
 
 export async function updateLab(id: number, formData: FormData) {
@@ -70,11 +70,11 @@ export async function updateLab(id: number, formData: FormData) {
   });
 
   revalidatePath("/labs");
-  redirect("/labs");
+  redirect("/labs?toast=Lab%20updated&type=success");
 }
 
 export async function deleteLab(id: number) {
   await prisma.labs.delete({ where: { Id: id } });
   revalidatePath("/labs");
-  redirect("/labs");
+  redirect("/labs?toast=Lab%20deleted&type=success");
 }
