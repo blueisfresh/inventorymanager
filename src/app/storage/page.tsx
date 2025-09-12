@@ -1,32 +1,17 @@
-import { Button } from "@/components/ui/button";
-import { getInventoryItems } from "@/lib/actions/inventory";
 import Link from "next/link";
-import { assignItemToLab, returnItemToTransfer } from "@/lib/actions/inventory";
-import { ItemStatus } from "@/lib/types";
-import type { InventoryItem } from "@/lib/types";
+import { Button } from "@/components/ui/button";
+import { getStorageLocations } from "@/lib/actions/storage";
+import type { StorageLocation } from "@/lib/types";
 
-export default async function InventoryPage() {
-  const items: InventoryItem[] = await getInventoryItems();
-
-  const getStatusLabel = (status: number): string => {
-    switch (status) {
-      case ItemStatus.Available:
-        return "Available";
-      case ItemStatus.Borrowed:
-        return "Borrowed";
-      case ItemStatus.InTransfer:
-        return "In Transfer";
-      default:
-        return "Unknown";
-    }
-  };
+export default async function StoragePage() {
+  const locations: StorageLocation[] = await getStorageLocations();
 
   return (
-    <div className="container mx-auto py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Inventory Items</h1>
-        <Link href="/inventory/create">
-          <Button>➕ Add Item</Button>
+    <div className="py-6">
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-bold">Storage Locations</h1>
+        <Link href="/storage/create">
+          <Button>➕ Add Location</Button>
         </Link>
       </div>
 
@@ -38,13 +23,13 @@ export default async function InventoryPage() {
                 Name
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                Category
+                Description
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                Status
+                Lab
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                Location
+                Items
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                 Actions
@@ -52,28 +37,28 @@ export default async function InventoryPage() {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {items.length === 0 ? (
+            {locations.length === 0 ? (
               <tr>
                 <td colSpan={5} className="px-6 py-4 text-center text-gray-500">
-                  No items found
+                  No locations found
                 </td>
               </tr>
             ) : (
-              items.map((item: InventoryItem) => (
-                <tr key={item.Id}>
-                  <td className="px-6 py-4 whitespace-nowrap">{item.Name}</td>
+              locations.map((loc) => (
+                <tr key={loc.Id}>
+                  <td className="px-6 py-4 whitespace-nowrap">{loc.Name}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {item.Category || "-"}
+                    {loc.Description || "-"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {getStatusLabel(item.Status)}
+                    {loc.Labs?.Name ?? "-"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {item.StorageLocations?.Name || "-"}
+                    {loc.InventoryItems?.length ?? 0}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                     <Link
-                      href={`/inventory/${item.Id}/edit`}
+                      href={`/storage/${loc.Id}/edit`}
                       className="inline-block"
                     >
                       <Button size="sm" variant="outline">
@@ -81,18 +66,12 @@ export default async function InventoryPage() {
                       </Button>
                     </Link>
                     <Link
-                      href={`/inventory/${item.Id}/delete`}
+                      href={`/storage/${loc.Id}/delete`}
                       className="inline-block"
                     >
                       <Button size="sm" variant="destructive">
                         Delete
                       </Button>
-                    </Link>
-                    <Link
-                      href={`/inventory/${item.Id}/move`}
-                      className="inline-block"
-                    >
-                      <Button size="sm">Move</Button>
                     </Link>
                   </td>
                 </tr>

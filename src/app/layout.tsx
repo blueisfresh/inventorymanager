@@ -27,7 +27,31 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <header className="border-b bg-white">
+          <nav className="container mx-auto flex items-center justify-between py-4">
+            <a href="/" className="text-xl font-semibold">
+              EVITA Inventory
+            </a>
+            <div className="flex gap-4">
+              <a href="/" className="text-gray-700 hover:text-black">
+                Home
+              </a>
+              <a href="/inventory" className="text-gray-700 hover:text-black">
+                Inventory
+              </a>
+              <a href="/storage" className="text-gray-700 hover:text-black">
+                Storage
+              </a>
+              <a href="/labs" className="text-gray-700 hover:text-black">
+                Labs
+              </a>
+              <a href="/movements" className="text-gray-700 hover:text-black">
+                Movements
+              </a>
+            </div>
+          </nav>
+        </header>
+        <main className="container mx-auto py-6">{children}</main>
       </body>
     </html>
   );

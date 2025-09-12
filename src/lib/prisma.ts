@@ -1,20 +1,20 @@
-import {PrismaClient} from "@prisma/client";
-import {PrismaMssql} from "@prisma/adapter-mssql";
+import { PrismaClient } from "@/generated/prisma";
+import { PrismaMssql } from "@prisma/adapter-mssql";
 
 const adapter = new PrismaMssql({
-    server: "localhost",
-    port: 1433,
-    database: "EvitaInventoryDB",
-    user: "sa",
-    password: "YourStrongPassw0rd",
-    options: {
-        encrypt: false, // true if Azure
-        trustServerCertificate: true,
-    },
+  server: "localhost",
+  port: 1433,
+  database: "EvitaInventoryDB",
+  user: "sa",
+  password: "YourStrongPassw0rd",
+  options: {
+    encrypt: false, // true if Azure
+    trustServerCertificate: true,
+  },
 });
 
 const globalForPrisma = globalThis as unknown as {
-    prisma: PrismaClient | undefined;
+  prisma: PrismaClient | undefined;
 };
 
 // 👇 ensure single Prisma connection in dev
