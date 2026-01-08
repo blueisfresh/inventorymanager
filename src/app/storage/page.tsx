@@ -45,20 +45,18 @@ export default async function StoragePage() {
               </tr>
             ) : (
               locations.map((loc) => (
-                <tr key={loc.Id}>
-                  <td className="px-6 py-4 whitespace-nowrap">{loc.Name}</td>
+                <tr key={loc.id}>
+                  <td className="px-6 py-4 whitespace-nowrap">{loc.name}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {loc.Description || "-"}
+                    {loc.description || "-"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {loc.Labs?.Name ?? "-"}
+                    {loc.lab?.name ?? "-"}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {loc.InventoryItems?.length ?? 0}
-                  </td>
+
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                     <Link
-                      href={`/storage/${loc.Id}/edit`}
+                      href={`/storage/${loc.id}/edit`}
                       className="inline-block"
                     >
                       <Button size="sm" variant="outline">
@@ -66,7 +64,7 @@ export default async function StoragePage() {
                       </Button>
                     </Link>
                     <Link
-                      href={`/storage/${loc.Id}/delete`}
+                      href={`/storage/${loc.id}/delete`}
                       className="inline-block"
                     >
                       <Button size="sm" variant="destructive">

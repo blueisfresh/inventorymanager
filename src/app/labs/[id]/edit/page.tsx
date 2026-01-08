@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { getLab, getTeachers, updateLab } from "@/lib/actions/labs";
 import { notFound } from "next/navigation";
+import { UserSummary } from "@/lib/types"; // Make sure to import this
 
 interface PageProps {
   params: { id: string };
@@ -24,7 +25,7 @@ export default async function EditLabPage({ params }: PageProps) {
           <input
             id="Name"
             name="Name"
-            defaultValue={lab.Name}
+            defaultValue={lab.name}
             required
             className="w-full border rounded-md px-3 py-2"
           />
@@ -36,15 +37,19 @@ export default async function EditLabPage({ params }: PageProps) {
           <select
             id="TeacherId"
             name="TeacherId"
-            defaultValue={lab.TeacherId ?? ""}
+            defaultValue={lab.teacher?.id ?? ""}
             className="w-full border rounded-md px-3 py-2"
           >
             <option value="">Select...</option>
-            {teachers.map((t) => (
-              <option key={t.Id} value={t.Id}>
-                {t.Username}
-              </option>
-            ))}
+            {teachers.map(
+              (
+                t: UserSummary // Use UserSummary type
+              ) => (
+                <option key={t.id} value={t.id}>
+                  {t.username} {/* lowercase u */}
+                </option>
+              )
+            )}
           </select>
         </div>
         <div className="flex gap-2 pt-4">

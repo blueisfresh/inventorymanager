@@ -19,7 +19,7 @@ export default async function DeleteStoragePage({ params }: PageProps) {
     <div className="max-w-md mx-auto mt-8">
       <h1 className="text-2xl font-bold mb-6">Delete Storage Location</h1>
       <p className="mb-6">
-        Are you sure you want to delete <strong>{loc.Name}</strong>?
+        Are you sure you want to delete <strong>{loc.name}</strong>?
       </p>
       <form
         action={deleteStorageLocation.bind(null, id)}

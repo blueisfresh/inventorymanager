@@ -16,7 +16,7 @@ export default async function DeleteLabPage({ params }: PageProps) {
     <div className="max-w-md mx-auto mt-8">
       <h1 className="text-2xl font-bold mb-6">Delete Lab</h1>
       <p className="mb-6">
-        Are you sure you want to delete <strong>{lab.Name}</strong>?
+        Are you sure you want to delete <strong>{lab.name}</strong>?
       </p>
       <form action={deleteLab.bind(null, id)} className="flex gap-2">
         <Button type="submit" variant="destructive">

@@ -32,7 +32,7 @@ export default async function CreateLabPage() {
           >
             <option value="">Select...</option>
             {teachers.map((t) => (
-              <option key={t.Id} value={t.Id}>
+              <option key={t.id} value={t.id}>
                 {t.Username}
               </option>
             ))}

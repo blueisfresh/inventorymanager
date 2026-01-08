@@ -8,13 +8,16 @@ import type { InventoryItem } from "@/lib/types";
 export default async function InventoryPage() {
   const items: InventoryItem[] = await getInventoryItems();
 
-  const getStatusLabel = (status: number): string => {
+  console.log("RAW ITEMS FROM API:", JSON.stringify(items[0], null, 2));
+
+  const getStatusLabel = (status: string): string => {
+    // Change number to string
     switch (status) {
-      case ItemStatus.Available:
+      case ItemStatus.AVAILABLE: // Corrected to all-caps
         return "Available";
-      case ItemStatus.Borrowed:
+      case ItemStatus.BORROWED:
         return "Borrowed";
-      case ItemStatus.InTransfer:
+      case ItemStatus.IN_TRANSFER:
         return "In Transfer";
       default:
         return "Unknown";
@@ -60,20 +63,16 @@ export default async function InventoryPage() {
               </tr>
             ) : (
               items.map((item: InventoryItem) => (
-                <tr key={item.Id}>
-                  <td className="px-6 py-4 whitespace-nowrap">{item.Name}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {item.Category || "-"}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {getStatusLabel(item.Status)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {item.StorageLocations?.Name || "-"}
+                <tr key={item.id}>
+                  <td className="px-6 py-4 whitespace-nowrap">{item.name}</td>
+                  <td className="px-6 py-4">{item.category || "-"}</td>
+                  <td className="px-6 py-4">{getStatusLabel(item.status)}</td>
+                  <td className="px-6 py-4">
+                    {item.storageLocation?.name || "-"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                     <Link
-                      href={`/inventory/${item.Id}/edit`}
+                      href={`/inventory/${item.id}/edit`}
                       className="inline-block"
                     >
                       <Button size="sm" variant="outline">
@@ -81,7 +80,7 @@ export default async function InventoryPage() {
                       </Button>
                     </Link>
                     <Link
-                      href={`/inventory/${item.Id}/delete`}
+                      href={`/inventory/${item.id}/delete`}
                       className="inline-block"
                     >
                       <Button size="sm" variant="destructive">
@@ -89,7 +88,7 @@ export default async function InventoryPage() {
                       </Button>
                     </Link>
                     <Link
-                      href={`/inventory/${item.Id}/move`}
+                      href={`/inventory/${item.id}/move`}
                       className="inline-block"
                     >
                       <Button size="sm">Move</Button>

@@ -1,27 +1,22 @@
-import { prisma } from "@/lib/prisma";
+// src/app/movements/page.tsx
+import { getMovements } from "@/lib/actions/movements";
 import { MovementType } from "@/lib/types";
 
 export default async function MovementsPage() {
-  const movements = await prisma.movements.findMany({
-    orderBy: { Date: "desc" },
-    include: {
-      InventoryItems: true,
-      StorageLocations_Movements_FromStorageLocationIdToStorageLocations: true,
-      StorageLocations_Movements_ToStorageLocationIdToStorageLocations: true,
-      Users: true,
-    },
-  });
+  // 1. Call your Java API through the server action
+  const movements = await getMovements();
 
-  const getType = (t: number) => {
-    switch (t) {
-      case MovementType.AssignToLab:
+  // 2. Updated helper to handle String Enums from Java
+  const getTypeLabel = (type: MovementType) => {
+    switch (type) {
+      case MovementType.ASSIGN_TO_LAB:
         return "Assign to Lab";
-      case MovementType.ReturnToTransferStorage:
+      case MovementType.RETURN_TO_TRANSFER:
         return "Return to Transfer";
-      case MovementType.ReturnToMainStorage:
+      case MovementType.CONFIRM_RETURN:
         return "Return to Main";
       default:
-        return "Unknown";
+        return type;
     }
   };
 
@@ -32,22 +27,22 @@ export default async function MovementsPage() {
         <table className="min-w-full bg-white border border-gray-300">
           <thead>
             <tr className="bg-gray-100">
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-bold uppercase">
                 Date
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-bold uppercase">
                 Type
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-bold uppercase">
                 Item
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-bold uppercase">
                 From
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-bold uppercase">
                 To
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-bold uppercase">
                 By
               </th>
             </tr>
@@ -56,33 +51,29 @@ export default async function MovementsPage() {
             {movements.length === 0 ? (
               <tr>
                 <td colSpan={6} className="px-6 py-4 text-center text-gray-500">
-                  No movements
+                  No movements recorded yet.
                 </td>
               </tr>
             ) : (
               movements.map((m) => (
-                <tr key={m.Id}>
+                <tr key={m.id}>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {new Date(m.Date).toLocaleString()}
+                    {new Date(m.date).toLocaleString()}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {getType(m.Type)}
+                    {getTypeLabel(m.type)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {m.InventoryItems?.Name}
+                    {m.inventoryItem?.name}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {m
-                      .StorageLocations_Movements_FromStorageLocationIdToStorageLocations
-                      ?.Name ?? "-"}
+                    {m.fromStorageLocation?.name ?? "-"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {m
-                      .StorageLocations_Movements_ToStorageLocationIdToStorageLocations
-                      ?.Name ?? "-"}
+                    {m.toStorageLocation?.name ?? "-"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {m.Users?.Username}
+                    {m.performedByUser?.username}
                   </td>
                 </tr>
               ))

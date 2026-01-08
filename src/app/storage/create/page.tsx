@@ -44,11 +44,15 @@ export default async function CreateStoragePage() {
             className="w-full border rounded-md px-3 py-2"
           >
             <option value="">Select...</option>
-            {labs.map((l) => (
-              <option key={l.Id} value={l.Id}>
-                {l.Name}
-              </option>
-            ))}
+            {labs.map(
+              (
+                l: any // Added :any or :Lab to fix implicit any
+              ) => (
+                <option key={l.id} value={l.id}>
+                  {l.name}
+                </option>
+              )
+            )}
           </select>
         </div>
         <div className="flex gap-2 pt-4">

@@ -31,7 +31,7 @@ export default async function EditStoragePage({ params }: PageProps) {
           <input
             id="Name"
             name="Name"
-            defaultValue={location.Name}
+            defaultValue={location.name}
             required
             className="w-full border rounded-md px-3 py-2"
           />
@@ -46,7 +46,7 @@ export default async function EditStoragePage({ params }: PageProps) {
           <input
             id="Description"
             name="Description"
-            defaultValue={location.Description || ""}
+            defaultValue={location.description || ""}
             className="w-full border rounded-md px-3 py-2"
           />
         </div>
@@ -57,15 +57,19 @@ export default async function EditStoragePage({ params }: PageProps) {
           <select
             id="LabId"
             name="LabId"
-            defaultValue={location.LabId ?? ""}
+            defaultValue={location.lab?.id ?? ""}
             className="w-full border rounded-md px-3 py-2"
           >
             <option value="">Select...</option>
-            {labs.map((l) => (
-              <option key={l.Id} value={l.Id}>
-                {l.Name}
-              </option>
-            ))}
+            {labs.map(
+              (
+                l: any // Added :any or :Lab to fix implicit any
+              ) => (
+                <option key={l.id} value={l.id}>
+                  {l.name}
+                </option>
+              )
+            )}
           </select>
         </div>
         <div className="flex gap-2 pt-4">

@@ -1,56 +1,65 @@
-// Import Prisma generated types
-import type {
-    InventoryItems,
-    Labs,
-    Movements,
-    Users,
-    StorageLocations,
-    Roles
-} from '../generated/prisma';
+// src/lib/types.ts
 
-// Re-export Prisma types with better names
-export type InventoryItem = InventoryItems & {
-    StorageLocations?: StorageLocations;
-    Labs?: Labs | null;
-};
-
-export type Lab = Labs & {
-    Users?: Users | null;
-    InventoryItems?: InventoryItems[];
-    StorageLocations?: StorageLocations[];
-};
-
-export type Movement = Movements & {
-    InventoryItems?: InventoryItems;
-    StorageLocations_Movements_FromStorageLocationIdToStorageLocations?: StorageLocations | null;
-    StorageLocations_Movements_ToStorageLocationIdToStorageLocations?: StorageLocations | null;
-    Users?: Users;
-};
-
-export type User = Users & {
-    Roles?: Roles;
-    Labs?: Labs[];
-    Movements?: Movements[];
-};
-
-export type StorageLocation = StorageLocations & {
-    Labs?: Labs | null;
-    InventoryItems?: InventoryItems[];
-};
-
-export type Role = Roles & {
-    Users?: Users[];
-};
-
-// Keep the enums as they match your database
 export enum ItemStatus {
-    Available = 0,
-    Borrowed = 1,
-    InTransfer = 2
+  AVAILABLE = "AVAILABLE",
+  BORROWED = "BORROWED",
+  IN_TRANSFER = "IN_TRANSFER",
 }
 
 export enum MovementType {
-    AssignToLab = 0,
-    ReturnToTransferStorage = 1,
-    ReturnToMainStorage = 2
+  ASSIGN_TO_LAB = "ASSIGN_TO_LAB",
+  RETURN_TO_TRANSFER = "RETURN_TO_TRANSFER",
+  CONFIRM_RETURN = "CONFIRM_RETURN",
+}
+
+export interface UserSummary {
+  id: number;
+  username: string;
+}
+
+export interface LabSummary {
+  id: number;
+  name: string;
+}
+
+export interface StorageLocationSummary {
+  id: number;
+  name: string;
+}
+
+export interface InventoryItem {
+  id: number;
+  name: string;
+  category: string;
+  serialNumber?: string;
+  status: ItemStatus;
+  storageLocation: { id: number; name: string }; // SINGULAR!
+  lab?: { id: number; name: string } | null; // SINGULAR!
+}
+
+export interface Lab {
+  id: number;
+  name: string;
+  teacher?: { id: number; username: string } | null; // teacher statt Users
+}
+
+export interface StorageLocation {
+  id: number;
+  name: string;
+  description?: string;
+  lab?: { id: number; name: string } | null; // lab statt Labs
+}
+
+export interface Movement {
+  id: number;
+  date: string; // ISO Date String from Java
+  type: MovementType;
+  inventoryItem: {
+    id: number;
+    name: string;
+    serialNumber: string;
+  };
+  fromStorageLocation?: StorageLocationSummary | null;
+  toStorageLocation?: StorageLocationSummary | null;
+  performedByUser: UserSummary;
 }

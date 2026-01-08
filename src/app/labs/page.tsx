@@ -39,14 +39,14 @@ export default async function LabsPage() {
               </tr>
             ) : (
               labs.map((lab) => (
-                <tr key={lab.Id}>
-                  <td className="px-6 py-4 whitespace-nowrap">{lab.Name}</td>
+                <tr key={lab.id}>
+                  <td className="px-6 py-4 whitespace-nowrap">{lab.name}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {lab.Users?.Username ?? "-"}
+                    {lab.teacher?.username ?? "-"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                     <Link
-                      href={`/labs/${lab.Id}/edit`}
+                      href={`/labs/${lab.id}/edit`}
                       className="inline-block"
                     >
                       <Button size="sm" variant="outline">
@@ -54,7 +54,7 @@ export default async function LabsPage() {
                       </Button>
                     </Link>
                     <Link
-                      href={`/labs/${lab.Id}/delete`}
+                      href={`/labs/${lab.id}/delete`}
                       className="inline-block"
                     >
                       <Button size="sm" variant="destructive">
